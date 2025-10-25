@@ -40,7 +40,7 @@ package_data = {"pyxact": pyi_files}
 setup(
     name="pyxact",
     url="https://github.com/cet-t/pyxact",
-    version="0.1.0",
+    version="0.1.1",
     description="C#-inspired utilities for Python",
     author="cet",
     packages=["pyxact"],
