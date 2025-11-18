@@ -1,4 +1,4 @@
-from typing import Any, Callable, TypeVar
+from typing import Any, Callable, Iterable, Optional, Type, TypeVar
 
 
 _range = range
@@ -17,21 +17,21 @@ class linq(list[TS]):
     def __is_empty(self) -> bool:
         return self.__len__() <= 0
 
-    def any(self, pred: Callable[[TS], bool] | None = None) -> bool:
+    def any(self, pred: Optional[Callable[[TS], bool]] = None) -> bool:
         if pred is None:
             return not self.__is_empty
-        return [0 for e in self if pred(e)].__len__() > 0
+        return len(list(filter(lambda e: pred(e), self))) > 0
 
-    def count(self, pred: Callable[[TS], bool] | None = None) -> int:
+    def count(self, pred: Optional[Callable[[TS], bool]] = None) -> int:
         if pred is None:
-            return self.__len__()
-        return [0 for e in self if pred(e)].__len__()
+            return len(self)
+        return len(list(filter(lambda e: pred(e), self)))
 
     def where(self, pred: Callable[[TS], bool]) -> "linq[TS]":
-        return linq([e for e in self if pred(e)])
+        return linq(filter(lambda e: pred(e), self))
 
     def select(self, func: Callable[[TS], TR]) -> "linq[TR]":
-        return linq([func(e) for e in self])
+        return linq(map(lambda e: func(e), self))
 
     def find_index(self, pred: Callable[[TS], bool]) -> int:
         for i, e in enumerate(self):
@@ -39,25 +39,25 @@ class linq(list[TS]):
                 return i
         return -1
 
-    def find(self, pred: Callable[[TS], bool]) -> TS | None:
+    def find(self, pred: Callable[[TS], bool]) -> Optional[TS]:
         for e in self:
             if pred(e):
                 return e
         return None
 
-    def find_last(self, pred: Callable[[TS], bool]) -> TS | None:
-        for e in self.__reversed__():
+    def find_last(self, pred: Callable[[TS], bool]) -> Optional[TS]:
+        for e in reversed(self):
             if pred(e):
                 return e
         return None
 
     def find_last_index(self, pred: Callable[[TS], bool]) -> int:
-        for i, e in enumerate(self.__reversed__()):
+        for i, e in enumerate(reversed(self)):
             if pred(e):
                 return i
         return -1
 
-    def first(self, pred: Callable[[TS], bool] | None = None) -> TS | None:
+    def first(self, pred: Optional[Callable[[TS], bool]] = None) -> Optional[TS]:
         if self.__is_empty:
             return None
         if pred is None:
@@ -68,7 +68,7 @@ class linq(list[TS]):
         return None
 
     def first_or_default(
-        self, default: TS, pred: Callable[[TS], bool] | None = None
+        self, default: TS, pred: Optional[Callable[[TS], bool]] = None
     ) -> TS:
         if self.__is_empty:
             return default
@@ -79,24 +79,24 @@ class linq(list[TS]):
                 return e
         return default
 
-    def last(self, pred: Callable[[TS], bool] | None = None) -> TS | None:
+    def last(self, pred: Optional[Callable[[TS], bool]] = None) -> TS | None:
         if self.__is_empty:
             return None
         if pred is None:
             return self[-1]
-        for e in self.__reversed__():
+        for e in reversed(self):
             if pred(e):
                 return e
         return None
 
     def last_or_default(
-        self, default: TS, pred: Callable[[TS], bool] | None = None
+        self, default: TS, pred: Optional[Callable[[TS], bool]] = None
     ) -> TS:
         if self.__is_empty:
             return default
         if pred is None:
             return self[-1]
-        for e in self.__reversed__():
+        for e in reversed(self):
             if pred(e):
                 return e
         return default
