@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from dataclasses import dataclass
 from seriapyze import serialize
 from typing import Optional
@@ -22,3 +23,12 @@ if __name__ == "__main__":
 
     user_toml = child.to_toml()
     print("\ntoml:\n" + user_toml)
+=======
+from pyxact.stringbuilder import stringbuilder
+
+sb = stringbuilder()
+sb.append("hello")
+sb.append(", ", "world").append_line("!")
+sb.insert(0, ">>> ")
+print(str(sb))
+>>>>>>> parent of 4a00248 (pyxact構成変更)
